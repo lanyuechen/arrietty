@@ -1,0 +1,32 @@
+{
+  "name": "arrietty",
+  "version": "1.0.0",
+  "description": "各种小工具集合",
+  "main": "index.js",
+  "scripts": {
+    "gulp": "rm -rf dist && gulp"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.5",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-decorators": "^7.1.2",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.1.5",
+    "@babel/runtime": "^7.1.5",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-eslint": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lanyuechen/arrietty.git"
+  },
+  "author": "lanyuechen",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/lanyuechen/arrietty/issues"
+  },
+  "homepage": "https://github.com/lanyuechen/arrietty#readme"
+}
