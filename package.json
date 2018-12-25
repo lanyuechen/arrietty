@@ -2,7 +2,7 @@
   "name": "arrietty",
   "version": "1.0.0",
   "description": "各种小工具集合",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "gulp": "rm -rf dist && gulp"
   },
@@ -19,6 +19,9 @@
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^5.0.0"
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lanyuechen/arrietty.git"
