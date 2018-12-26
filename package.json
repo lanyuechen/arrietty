@@ -4,14 +4,17 @@
   "description": "各种小工具集合",
   "main": "dist/index.js",
   "scripts": {
-    "gulp": "rm -rf dist && gulp"
+    "gulp": "rm -rf dist && gulp",
+    "test": "karma start",
+    "start": "webpack-dev-server --open --mode development",
+    "build": "webpack -p --progress --color --mode production"
   },
   "devDependencies": {
     "@babel/core": "^7.1.5",
-    "@babel/plugin-proposal-export-default-from": "^7.0.0",
-    "@babel/plugin-syntax-export-default-from": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-proposal-decorators": "^7.1.2",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-syntax-export-default-from": "^7.0.0",
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.1.5",
@@ -19,7 +22,14 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^5.0.0"
+    "gulp-eslint": "^5.0.0",
+    "jasmine-core": "^3.3.0",
+    "karma": "^3.1.4",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.2",
+    "karma-jasmine": "^2.0.1",
+    "karma-webpack": "^3.0.5",
+    "webpack": "^4.28.2"
   },
   "files": [
     "dist"
