@@ -1,10 +1,10 @@
 {
   "name": "arrietty",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "各种小工具集合",
   "main": "dist/index.js",
   "scripts": {
-    "gulp": "rm -rf dist && gulp",
+    "dist": "rm -rf dist && gulp",
     "test": "karma start",
     "start": "webpack-dev-server --open --mode development",
     "build": "webpack -p --progress --color --mode production"
