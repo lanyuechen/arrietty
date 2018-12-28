@@ -34,6 +34,9 @@
   "files": [
     "dist"
   ],
+  "keywords": [
+    "js", "tool", "data"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lanyuechen/arrietty.git"
