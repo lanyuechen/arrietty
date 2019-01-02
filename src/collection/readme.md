@@ -41,5 +41,5 @@ collection.or('(1, 5)', '[3, 8)', ...).or('[10, 20)')...
 ### 输出结果 collection.output()
 
 ```js
-collection.and('(1, 5)', '[3, 8)', ...).output();
+collection.output();
 ```
