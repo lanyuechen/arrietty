@@ -1,4 +1,4 @@
-export default function(a, b) {
+export default function deepCompare(a, b) {
   if (typeof(a) !== typeof(b)) {
     return false;
   }

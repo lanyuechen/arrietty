@@ -5,9 +5,12 @@
   "main": "dist/index.js",
   "scripts": {
     "dist": "rm -rf dist && gulp",
-    "test": "karma start",
+    "test": "jest",
     "start": "webpack-dev-server --open --mode development",
     "build": "webpack -p --progress --color --mode production"
+  },
+  "dependencies": {
+    "moment": "^2.23.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.5",
@@ -19,23 +22,23 @@
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.1.5",
     "@babel/runtime": "^7.1.5",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "jest": "^23.6.0",
+    "identity-obj-proxy": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^5.0.0",
-    "jasmine-core": "^3.3.0",
-    "karma": "^3.1.4",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-coverage": "^1.1.2",
-    "karma-jasmine": "^2.0.1",
-    "karma-webpack": "^3.0.5",
     "webpack": "^4.28.2"
   },
   "files": [
     "dist"
   ],
   "keywords": [
-    "js", "tool", "data"
+    "js",
+    "tool",
+    "data"
   ],
   "repository": {
     "type": "git",

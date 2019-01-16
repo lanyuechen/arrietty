@@ -1,4 +1,4 @@
-export default function(target, source) {
+export default function deepMerge(target, source) {
   if (typeof(target) !== 'object' || typeof(source) !== 'object') {
     return source;
   }
