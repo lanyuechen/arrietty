@@ -1,19 +1,17 @@
 import moment from 'moment';
 
 export default class Statis {
-  constructor({data, format, extra, formula, type}) {
+  constructor({data, extra, keyMap, formula}) {
     this.data = data;
-    this.format = format;
     this.extra = extra;
-    this.formula = formula || function(a, b) {return a - b};
-    this.type = type;
-  }
 
-  extraKey(key) {
-    if (this.format) {
-      return moment(key, this.format).subtract(1, this.type).format(this.format);
+    this.formula = formula || function(a, b) {return (a - b) / b};
+    if (typeof(keyMap) === 'function') {
+      this.keyMap = keyMap;
+    } else {
+      const [, f, n, d] = keyMap.match(/(.*):(-?\d+)(\w+)/);  //格式化字符串；数量；日期标识
+      this.keyMap = key => f ? moment(key, f).subtract(n, d).format(f) : key;
     }
-    return key;
   }
 
   async calc() {
@@ -24,7 +22,7 @@ export default class Statis {
     }, {});
 
     return this.data.map(d => {
-      const value = dMap[this.extraKey(d.key)] || [];
+      const value = dMap[this.keyMap(d.key)] || [];
       return {
         ...d,
         value: d.value.map((v, i) => this.formula(v, value[i]))
