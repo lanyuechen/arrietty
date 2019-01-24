@@ -24,12 +24,14 @@
     "@babel/runtime": "^7.1.5",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
-    "jest": "^23.6.0",
-    "identity-obj-proxy": "^3.0.0",
+    "css-loader": "^2.1.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-eslint": "^5.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^23.6.0",
+    "style-loader": "^0.23.1",
     "webpack": "^4.28.2"
   },
   "files": [

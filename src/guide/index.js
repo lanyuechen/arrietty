@@ -1,0 +1,262 @@
+import './style.css';
+
+const GUIDE = Symbol('guide');
+
+export default class Guide {
+  static getInstance() {
+    if (!window[GUIDE]) {
+      window[GUIDE] = new Guide();
+    }
+    return window[GUIDE];
+  }
+
+  constructor() {
+    this.interval = setInterval(() => {
+      console.log('user guide ...');
+      this.loop();
+    }, 2000);
+  }
+
+  getSpec() {
+    if (!this.spec && localStorage.spec) {
+      this.spec = JSON.parse(localStorage.spec);
+    }
+    return this.spec;
+  }
+
+  /**
+   * 为dom注册标记,并保存到引导文档中
+   * @param dom 被标记的dom
+   * @param step 此步骤为第几步
+   */
+  register(dom, step) {
+    const spec = this.getSpec();
+    if (!spec || !spec[step]) {          //如果没有spec或如果注册的引导不存在,则不进入新用户引导
+      return;
+    }
+    spec[step].id = `k${new Date().getTime()}${parseInt(Math.random() * 1000000)}`;
+    dom.setAttribute('data-id', spec[step].id);
+  }
+
+  loop() {
+    const spec = this.getSpec();
+    if (!spec) {
+      return;
+    }
+    for (let i = 0; i < spec.length; i++) {
+      const s = spec[i];
+      if (!s || (s.after && !isNaN(s.after.find(step => spec[step])))) {
+        continue;
+      }
+      this.render(i);
+    }
+  }
+
+  /**
+   * 渲染遮罩,提示等元素
+   * @param step 步骤编号
+   */
+  render(step) {
+    const option = this.spec[step];
+    let dom = document.querySelector(`[data-id=${option.id}]`);
+
+    //通过parentNode定位父dom
+    if (dom && option.path) {
+      option.path.split('.').map(k => {
+        dom = dom[k];
+      });
+    }
+
+    this.clear(step);
+
+    if (!dom) {
+      return;
+    }
+
+    let rect = dom.getBoundingClientRect();
+
+    //高亮显示区域
+    const mask = document.createElement('div');
+    mask.className = 'guide-mask';
+    if (option.trigger === 'forbidden') {
+      mask.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    } else if (option.trigger === 'manual') {
+      mask.style.pointerEvents = 'none';
+    } else {
+      mask.addEventListener('click', () => {
+        dom.click();
+        this.finish(step);
+      });
+    }
+
+    //遮罩显示区域
+    let maskBg;
+    if (!option.noMask) {
+      maskBg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      maskBg.setAttribute('class', 'guide-mask-bg');
+      var polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      polygon.setAttribute('points', `
+        0,0 0,99999 99999,99999, 99999,0 0,0
+        ${rect.left},${rect.top} ${rect.right},${rect.top}
+        ${rect.right},${rect.bottom} ${rect.left},${rect.bottom}
+        ${rect.left},${rect.top}
+      `);
+      const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      polyline.setAttribute('points', `
+        ${rect.left},${rect.top} ${rect.right},${rect.top}
+        ${rect.right},${rect.bottom} ${rect.left},${rect.bottom}
+        ${rect.left},${rect.top}
+      `);
+      polygon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      });
+
+      maskBg.appendChild(polygon);
+      maskBg.appendChild(polyline);
+      document.body.appendChild(maskBg);
+    }
+
+    let tooltip;
+    if (option.tip) {
+      tooltip = this.tip(step, option, rect);
+      document.body.appendChild(tooltip);
+    }
+
+    this.spec[step] = { ...option, dom, mask, tooltip, maskBg };
+    dom.appendChild(mask);
+  }
+
+  finish(step) {
+    this.clear(step);
+    this.spec && (this.spec[step] = null);
+    if (!this.spec || !this.spec.find(d => d)) {
+      this.destroy();
+      return;
+    }
+    const spec = this.spec.map(d => d && {
+      id: d.id,
+      tip: d.tip,
+      trigger: d.trigger,
+      after: d.after,
+      path: d.path,
+      position: d.position,
+      next: d.next,
+      finish: d.finish,
+      noSkip: d.noSkip,
+      noMask: d.noMask,
+      type: d.type
+    });
+    localStorage.setItem('spec', JSON.stringify(spec));
+
+    this.loop();    //当结束某步骤后立即轮询一次,定位到下一步
+  }
+
+  clear(step) {
+    const item = this.spec && this.spec[step];
+    if (!item) {
+      return;
+    }
+
+    //清除mask
+    item.mask && item.dom.removeChild(item.mask);
+    item.maskBg && document.body.removeChild(item.maskBg);
+
+    //清除tip
+    item.tooltip && document.body.removeChild(item.tooltip);
+
+    //清除数据中保存的dom对象
+    item.dom = null;
+    item.mask = null;
+    item.maskBg = null;
+    item.tooltip = null;
+  }
+
+  destroy() {
+    clearInterval(this.interval);
+    delete(this.interval);
+    delete(this.spec);
+    delete(localStorage.spec);
+  }
+
+  setPosition(dom, rect, position) {
+    if (position === 'left') {
+      dom.style.cssText = `
+        left: ${rect.left - 210}px;
+        top: ${(rect.top + rect.bottom) / 2 - 40}px;
+      `;
+    } else if (position === 'bottom') {
+      dom.style.cssText = `
+        left: ${(rect.left + rect.right) / 2 - 100}px;
+        top: ${rect.bottom + 10}px;
+      `;
+    } else if (position === 'bottom-left') {
+      dom.style.cssText = `
+        left: ${(rect.left + rect.right) / 2 - 200 * 0.8}px;
+        top: ${rect.bottom + 10}px;
+      `;
+    } else {
+      dom.style.cssText = `
+        left: ${rect.right + 10}px;
+        top: ${(rect.top + rect.bottom) / 2 - 40}px;
+      `;
+    }
+  }
+
+  tipImg(step, option, rect) {
+    const { tip, position } = option;
+    const image = document.createElement('img');
+    image.className = `guide-tip guide-tip-img ${position || 'right'}`;
+    image.style.pointerEvents = 'all';
+    image.src = tip;
+    this.setPosition(image, {
+      ...rect,
+      left: rect.left + 60,
+      right: rect.right + 60,
+      bottom: rect.bottom - 60
+    }, position);
+    image.style.width = '80px';
+    image.addEventListener('click', () => {
+      this.finish(step);
+    });
+    return image;
+  }
+
+  tip(step, option, rect) {
+    if (option.type === 'img') {
+      return this.tipImg(step, option, rect);
+    }
+
+    const { tip, position } = option;
+    const tooltip = document.createElement('div');
+    tooltip.innerHTML = `<p>${tip}</p>`;
+    tooltip.className = `guide-tip ${position || 'right'}`;
+    this.setPosition(tooltip, rect, position);
+
+    if (!option.noSkip) {
+      const goAway = document.createElement('a');
+      goAway.className = 'guide-tip-go-away';
+      goAway.innerHTML = i18n('skipGuide');
+      goAway.addEventListener('click', () => {
+        this.clear(step);
+        this.destroy();
+      });
+      tooltip.appendChild(goAway);
+    }
+
+    if (option.next || option.finish) {
+      const next = document.createElement('a');
+      next.className = 'guide-tip-next';
+      next.innerHTML = i18n('gotIt');
+      next.addEventListener('click', () => {
+        this.finish(step);
+      });
+      tooltip.appendChild(next);
+    }
+
+    return tooltip;
+  }
+}
