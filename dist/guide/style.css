@@ -1,0 +1,95 @@
+.guide-mask {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    cursor: pointer;
+    z-index: 10000;
+}
+.guide-mask-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    z-index: 9999;
+}
+.guide-mask-bg polygon {
+    fill: rgba(136, 136, 136, 0.7)!important;
+    pointer-events: all;
+}
+.guide-mask-bg polyline {
+    stroke: #23C132;
+    stroke-width: 2px;
+    stroke-dasharray: 2px;
+    fill: none;
+    pointer-events: none;
+}
+.guide-tip {
+    position: fixed;
+    pointer-events: none;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    padding: 16px;
+    z-index: 10001;
+    color: #333333;
+    width: 200px;
+}
+.guide-tip.guide-tip-img {
+    pointer-events: all;
+    cursor: pointer;
+    background: transparent;
+    box-shadow: none;
+}
+.guide-tip-img {
+    animation: point 0.5s infinite alternate;
+}
+@keyframes point {
+    0% {
+        margin-left: 0;
+        margin-top: 0;
+    }
+    100% {
+        margin-top: -20px;
+    }
+}
+.guide-tip:before {
+    content: '';
+    display: block;
+    border: 5px solid transparent;
+    border-right-color: #fff;
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: -9px;
+    top: 50%;
+    margin-top: -5px;
+}
+.guide-tip.left:before {
+    left: auto;
+    right: -9px;
+    transform: rotate(180deg);
+}
+.guide-tip.bottom:before {
+    left: 50%;
+    top: -4px;
+    transform: rotate(90deg);
+}
+.guide-tip.bottom-left:before {
+    left: 80%;
+    top: -5px;
+    transform: rotate(90deg);
+}
+.guide-tip .guide-tip-next, .guide-tip .guide-tip-go-away {
+    color: #23C132;
+    font-size: 12px;
+    float: right;
+    margin-top: 16px;
+    pointer-events: all;
+    cursor: pointer;
+    margin-left: 16px;
+}
