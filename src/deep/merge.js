@@ -18,5 +18,9 @@ export default function deepMerge(target, source) {
     }
   }
 
+  if (Array.isArray(target)) {
+    return Object.values(result);
+  }
+
   return result;
 }

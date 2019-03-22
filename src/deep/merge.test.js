@@ -8,6 +8,7 @@ function test(a, b, result) {
 }
 
 describe('deep-merge', () => {
+  test([1,2], ['a'], ['a', 2])
   test({name: '小明'}, {name: '小红'}, {name: '小红'});
   test({name: '小明'}, 'haha', 'haha');
   test('haha', {name: '小红'}, {name: '小红'});
