@@ -1,5 +1,9 @@
-export default function deepMerge(target, source) {
+export default function deepMerge(target, source, isValue) {
   if (typeof(target) !== 'object' || typeof(source) !== 'object') {
+    return source;
+  }
+
+  if (typeof(isValue) === 'function' && isValue(source, target)) {
     return source;
   }
 
@@ -12,7 +16,7 @@ export default function deepMerge(target, source) {
   }, {});
   for (let key of keys) {
     if (typeof(target[key]) === 'object' && typeof(source[key]) === 'object') {
-      result[key] = deepMerge(target[key], source[key]);
+      result[key] = deepMerge(target[key], source[key], isValue);
     } else {
       result[key] = source[key];
     }

@@ -9,8 +9,12 @@ exports.default = deepMerge;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
-function deepMerge(target, source) {
+function deepMerge(target, source, isValue) {
   if ((0, _typeof2.default)(target) !== 'object' || (0, _typeof2.default)(source) !== 'object') {
+    return source;
+  }
+
+  if (typeof isValue === 'function' && isValue(source, target)) {
     return source;
   }
 
@@ -27,7 +31,7 @@ function deepMerge(target, source) {
     var key = keys[_i];
 
     if ((0, _typeof2.default)(target[key]) === 'object' && (0, _typeof2.default)(source[key]) === 'object') {
-      result[key] = deepMerge(target[key], source[key]);
+      result[key] = deepMerge(target[key], source[key], isValue);
     } else {
       result[key] = source[key];
     }
