@@ -1,4 +1,4 @@
-const EVENT_INSTANCE = Symbol('event-instance');
+const EVENT_INSTANCE = Symbol.for('event-instance');
 
 class CustomEvent {
   constructor() {
