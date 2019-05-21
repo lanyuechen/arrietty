@@ -11,7 +11,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var EVENT_INSTANCE = Symbol('event-instance');
+var EVENT_INSTANCE = Symbol.for('event-instance');
 
 var CustomEvent =
 /*#__PURE__*/
