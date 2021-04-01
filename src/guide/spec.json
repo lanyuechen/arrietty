@@ -1,0 +1,13 @@
+[
+  {
+    "id": "new-custom-component",
+    "tip": "创建自定义组件",
+    "trigger": "manual",
+    "after": [],
+    "path": "",
+    "position": "left|bottom|bottom-left|right",
+    "showNext": true,
+    "showSkip": true,
+    "showMask": true
+  }
+]
