@@ -1,8 +1,12 @@
+import { uuid } from '../util';
+import spec from './spec';
 import './style.css';
 
-const GUIDE = Symbol('guide');
+localStorage.spec = JSON.stringify(spec);
 
-export default class Guide {
+const GUIDE = Symbol.for('guide');
+
+class Guide {
   static getInstance() {
     if (!window[GUIDE]) {
       window[GUIDE] = new Guide();
@@ -31,10 +35,10 @@ export default class Guide {
    */
   register(dom, step) {
     const spec = this.getSpec();
-    if (!spec || !spec[step]) {          //如果没有spec或如果注册的引导不存在,则不进入新用户引导
+    if (!spec || !spec[step]) { // 如果没有spec或如果注册的引导不存在,则不进入新用户引导
       return;
     }
-    spec[step].id = `k${new Date().getTime()}${parseInt(Math.random() * 1000000)}`;
+    spec[step].id = uuid();
     dom.setAttribute('data-id', spec[step].id);
   }
 
@@ -60,7 +64,7 @@ export default class Guide {
     const option = this.spec[step];
     let dom = document.querySelector(`[data-id=${option.id}]`);
 
-    //通过parentNode定位父dom
+    // 通过parentNode定位父dom
     if (dom && option.path) {
       option.path.split('.').map(k => {
         dom = dom[k];
@@ -75,7 +79,7 @@ export default class Guide {
 
     let rect = dom.getBoundingClientRect();
 
-    //高亮显示区域
+    // 高亮显示区域
     const mask = document.createElement('div');
     mask.className = 'guide-mask';
     if (option.trigger === 'forbidden') {
@@ -92,9 +96,9 @@ export default class Guide {
       });
     }
 
-    //遮罩显示区域
+    // 遮罩显示区域
     let maskBg;
-    if (!option.noMask) {
+    if (option.showMask) {
       maskBg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       maskBg.setAttribute('class', 'guide-mask-bg');
       var polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
@@ -146,13 +150,12 @@ export default class Guide {
       position: d.position,
       next: d.next,
       finish: d.finish,
-      noSkip: d.noSkip,
-      noMask: d.noMask,
-      type: d.type
+      showSkip: d.showSkip,
+      showMask: d.showMask,
     });
     localStorage.setItem('spec', JSON.stringify(spec));
 
-    this.loop();    //当结束某步骤后立即轮询一次,定位到下一步
+    this.loop(); // 当结束某步骤后立即轮询一次,定位到下一步
   }
 
   clear(step) {
@@ -161,14 +164,14 @@ export default class Guide {
       return;
     }
 
-    //清除mask
+    // 清除mask
     item.mask && item.dom.removeChild(item.mask);
     item.maskBg && document.body.removeChild(item.maskBg);
 
-    //清除tip
+    // 清除tip
     item.tooltip && document.body.removeChild(item.tooltip);
 
-    //清除数据中保存的dom对象
+    // 清除数据中保存的dom对象
     item.dom = null;
     item.mask = null;
     item.maskBg = null;
@@ -177,9 +180,9 @@ export default class Guide {
 
   destroy() {
     clearInterval(this.interval);
-    delete(this.interval);
-    delete(this.spec);
-    delete(localStorage.spec);
+    delete this.interval;
+    delete this.spec;
+    delete localStorage.spec;
   }
 
   setPosition(dom, rect, position) {
@@ -206,40 +209,17 @@ export default class Guide {
     }
   }
 
-  tipImg(step, option, rect) {
-    const { tip, position } = option;
-    const image = document.createElement('img');
-    image.className = `guide-tip guide-tip-img ${position || 'right'}`;
-    image.style.pointerEvents = 'all';
-    image.src = tip;
-    this.setPosition(image, {
-      ...rect,
-      left: rect.left + 60,
-      right: rect.right + 60,
-      bottom: rect.bottom - 60
-    }, position);
-    image.style.width = '80px';
-    image.addEventListener('click', () => {
-      this.finish(step);
-    });
-    return image;
-  }
-
   tip(step, option, rect) {
-    if (option.type === 'img') {
-      return this.tipImg(step, option, rect);
-    }
-
     const { tip, position } = option;
     const tooltip = document.createElement('div');
     tooltip.innerHTML = `<p>${tip}</p>`;
     tooltip.className = `guide-tip ${position || 'right'}`;
     this.setPosition(tooltip, rect, position);
 
-    if (!option.noSkip) {
+    if (option.showSkip) {
       const goAway = document.createElement('a');
       goAway.className = 'guide-tip-go-away';
-      goAway.innerHTML = i18n('skipGuide');
+      goAway.innerHTML = '跳过';
       goAway.addEventListener('click', () => {
         this.clear(step);
         this.destroy();
@@ -247,10 +227,10 @@ export default class Guide {
       tooltip.appendChild(goAway);
     }
 
-    if (option.next || option.finish) {
+    if (option.showNext) {
       const next = document.createElement('a');
       next.className = 'guide-tip-next';
-      next.innerHTML = i18n('gotIt');
+      next.innerHTML = option.nextText || '下一步';
       next.addEventListener('click', () => {
         this.finish(step);
       });
@@ -260,3 +240,5 @@ export default class Guide {
     return tooltip;
   }
 }
+
+export default Guide.getInstance();
