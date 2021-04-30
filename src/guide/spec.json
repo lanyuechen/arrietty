@@ -1,13 +1,46 @@
 [
   {
-    "id": "new-custom-component",
-    "tip": "创建自定义组件",
+    "id": "step0",
+    "tip": "第1步：元素可以点击，点击“下一步”进入下一步",
     "trigger": "manual",
     "after": [],
     "path": "",
-    "position": "left|bottom|bottom-left|right",
+    "position": "bottom",
     "showNext": true,
     "showSkip": true,
     "showMask": true
+  },
+  {
+    "id": "step1",
+    "tip": "第2步：元素不可以点击，点击“下一步”进入下一步",
+    "trigger": "forbidden",
+    "after": [0],
+    "path": "",
+    "position": "bottom",
+    "showNext": true,
+    "showSkip": true,
+    "showMask": true
+  },
+  {
+    "id": "step2",
+    "tip": "第3步：点击元素进入下一步，同时出发元素的点击事件，点击“下一步进入下一步”, tooltip位于右侧",
+    "trigger": "default",
+    "after": [1],
+    "path": "",
+    "position": "right",
+    "showNext": true,
+    "showSkip": true,
+    "showMask": true
+  },
+  {
+    "id": "step3",
+    "tip": "第4步：没有mask",
+    "trigger": "manual",
+    "after": [2],
+    "path": "",
+    "position": "right",
+    "showNext": true,
+    "showSkip": true,
+    "showMask": false
   }
 ]
