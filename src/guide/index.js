@@ -1,5 +1,4 @@
-import { uuid } from '../util';
-import spec from './spec';
+import spec from './spec.json';
 import './style.css';
 
 localStorage.spec = JSON.stringify(spec);
@@ -15,7 +14,7 @@ class Guide {
   }
 
   constructor() {
-    this.interval = setInterval(() => {
+    this.interval = setTimeout(() => {
       console.log('user guide ...');
       this.loop();
     }, 2000);
@@ -38,7 +37,7 @@ class Guide {
     if (!spec || !spec[step]) { // 如果没有spec或如果注册的引导不存在,则不进入新用户引导
       return;
     }
-    spec[step].id = uuid();
+    spec[step].id = `${Math.random()}`;
     dom.setAttribute('data-id', spec[step].id);
   }
 
@@ -90,7 +89,9 @@ class Guide {
     } else if (option.trigger === 'manual') {
       mask.style.pointerEvents = 'none';
     } else {
-      mask.addEventListener('click', () => {
+      mask.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         dom.click();
         this.finish(step);
       });
@@ -189,22 +190,20 @@ class Guide {
     if (position === 'left') {
       dom.style.cssText = `
         left: ${rect.left - 210}px;
-        top: ${(rect.top + rect.bottom) / 2 - 40}px;
+        top: ${(rect.top + rect.bottom) / 2}px;
+        transform: translateY(-50%);
       `;
     } else if (position === 'bottom') {
       dom.style.cssText = `
-        left: ${(rect.left + rect.right) / 2 - 100}px;
+        left: ${(rect.left + rect.right) / 2}px;
         top: ${rect.bottom + 10}px;
-      `;
-    } else if (position === 'bottom-left') {
-      dom.style.cssText = `
-        left: ${(rect.left + rect.right) / 2 - 200 * 0.8}px;
-        top: ${rect.bottom + 10}px;
+        transform: translateX(-50%);
       `;
     } else {
       dom.style.cssText = `
         left: ${rect.right + 10}px;
-        top: ${(rect.top + rect.bottom) / 2 - 40}px;
+        top: ${(rect.top + rect.bottom) / 2}px;
+        transform: translateY(-50%);
       `;
     }
   }
